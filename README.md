@@ -1,185 +1,159 @@
-# Live Cognitive Health Coach
+# Live Cognitive Health Coach — NLP-Driven Multimodal Fatigue Estimation
 
 ## Overview
 
-The **Live Cognitive Health Coach** is a real-time system designed to monitor cognitive and emotional fatigue in users by analyzing webcam video, microphone audio, and text inputs. It fuses multiple modalities including facial emotion recognition, eye-blink rate, speech prosody, and sentiment analysis to provide actionable recommendations for reducing fatigue and improving mental well-being.
+The **Live Cognitive Health Coach** is fundamentally an **NLP-centered, multimodal cognitive‑state estimation system**.  
+While it integrates computer vision (facial emotion recognition, eye‑blink analysis), its **primary intelligence comes from NLP** — speech‑to‑text processing, linguistic sentiment interpretation, paralinguistic prosody analysis, and natural‑language recommendation generation.
 
-The system leverages:
+NLP shapes the model’s understanding of user intent, emotional nuance, and cognitive load, making it the backbone of the entire system.
 
-* **Face emotion detection** with ResNet18 trained on emotional datasets.
-* **Eye Aspect Ratio (EAR)** to detect fatigue via eye blinks.
-* **Audio analysis** using OpenAI's Whisper for transcription and prosody extraction.
-* **Sentiment scoring** to detect negative emotional content in speech.
-* **Real-time recommendations** based on fused metrics.
+---
+
+## 🔥 Why This Is an NLP Project
+
+Although multimodal, the system’s *decisive* features depend on NLP:
+
+### **1. Automatic Speech Recognition (ASR) — Whisper**
+Audio → token sequences → text  
+This provides the linguistic substrate for all downstream inference.
+
+### **2. Sentiment & Semantic Polarity Analysis**
+The transcript is analyzed for lexical affect (positive/negative/stress indicators).  
+This semantic polarity directly modifies the fatigue score.
+
+### **3. Speech Prosody as Para‑Linguistic NLP**
+Prosodic features extracted from speech:
+- RMS (energy stability)
+- Pitch (intonation)
+- WPS (speech rate)
+
+These correlate with:
+- mental fatigue  
+- cognitive load  
+- emotional dulling  
+
+Prosody is a recognized **NLP task under paralinguistics**.
+
+### **4. Natural Language Generation (NLG)**
+The system generates:
+- stress‑reduction instructions  
+- microbreak suggestions  
+- fatigue interventions  
+
+This is rule‑based NLG tuned for real‑time guidance.
+
+### **5. Multimodal Fusion with Linguistic Dominance**
+The linguistic (text + prosody) signal has the *strongest* influence in the final fatigue estimation.
 
 ---
 
 ## Features
 
-* Real-time video and audio processing.
-* Facial emotion recognition: `angry`, `happy`, `neutral`, `sad`.
-* Eye-blink detection and EAR computation using MediaPipe FaceMesh.
-* Audio recording, normalization, and trimming.
-* Speech transcription using Whisper model.
-* Sentiment analysis of spoken text.
-* Fatigue computation by fusing emotion, blink rate, speech metrics, and sentiment.
-* Actionable recommendations: stretches, microbreaks, guided breathing.
-* Visual overlay displaying metrics in real-time.
-* CSV logging of all metrics for offline analysis.
+### 🔹 **NLP Features**
+- Whisper‑based ASR  
+- Sentiment polarity scoring  
+- Prosody extraction (RMS, Pitch, WPS)  
+- NLP‑driven fatigue inference  
+- NLG‑based recommendation engine  
+
+### 🔹 **Vision Features (Secondary Modalities)**
+- Facial emotion recognition via ResNet18  
+- MediaPipe Eye Aspect Ratio (EAR)  
+- Blink‑rate analysis  
+
+### 🔹 **Fusion Engine**
+Combines NLP, audio paralinguistics, and computer vision into a single fatigue score.
+
+---
+
+## Pipeline Breakdown (NLP‑First Perspective)
+
+### **A. Speech Pipeline**
+1. Record audio  
+2. Whisper transforms speech → text  
+3. Sentiment analysis on transcript  
+4. Compute prosody (RMS, pitch, WPS)  
+5. NLP features weighed into fatigue score  
+
+### **B. Vision Pipeline**
+1. Face detection  
+2. Emotion classification  
+3. EAR + blink rate  
+4. Supplementary emotional cues  
+
+### **C. Fusion + NLG**
+The system combines linguistic + paralinguistic + visual signals to:
+- compute fatigue  
+- generate contextual natural‑language recommendations  
+
+---
+
+## Architecture Diagram (Conceptual)
+
+```
+Audio → Whisper ASR → Text → Sentiment → NLP Fatigue Features
+                     ↘ Prosody (RMS/Pitch/WPS) ↗
+
+Video → Face Emotion → Visual Features
+         EAR/Blinks  → Physiological Features
+
+All → Fusion Engine → Fatigue Score → NLG Advice
+```
 
 ---
 
 ## Installation
 
-1. Clone the repository:
-
-```bash
-git clone <repo_url>
-cd live_coach
-```
-
-2. Create a virtual environment (optional but recommended):
-
-```bash
-python -m venv venv
-source venv/bin/activate  # Linux/Mac
-venv\Scripts\activate     # Windows
-```
-
-3. Install dependencies:
-
 ```bash
 pip install -r requirements.txt
 ```
-
-4. Ensure you have a trained face emotion model at `models/face_emotion_resnet18.pt`. You can train one or download a pre-trained model.
 
 ---
 
 ## Usage
 
-### Command-line options:
-
+### Live NLP + Vision Cognitive Coach
 ```bash
-python live_coach.py [--cam 0] [--video_interval 5] [--audio_duration 6] [--logcsv path/to/log.csv] [--whisper_model medium] [--ear_window 1.0] [--config path/to/config.json]
+python live_coach.py --cam 0 --whisper_model medium
 ```
 
-* `--cam`: Webcam index.
-* `--video_interval`: Seconds between emotion snapshots.
-* `--audio_duration`: Seconds of microphone recording.
-* `--logcsv`: Path to CSV log file.
-* `--whisper_model`: Whisper model size (`tiny`, `base`, `small`, `medium`, `large`).
-* `--ear_window`: Smoothing window for EAR computation.
-* `--config`: Path to optional calibration config.
-
-### Example:
-
+### Video/Audio Inference
 ```bash
-python live_coach.py --cam 0 --video_interval 5 --audio_duration 6 --logcsv data/processed/live_logs.csv --whisper_model medium
+python infer.py --video 0 --audio input.wav
 ```
 
 ---
 
-## How it Works
+## Outputs
 
-### Video Processing
-
-1. Capture webcam frames.
-2. Detect face using **MediaPipe Face Detection**; fallback to Haar cascades.
-3. Crop largest face and pass through **ResNet18** emotion classifier.
-4. Compute **EAR** for blink detection and fatigue estimation.
-
-### Audio Processing
-
-1. Record audio for specified duration.
-2. Normalize peak and trim silence using **librosa**.
-3. Transcribe speech using **Whisper**.
-4. Compute prosody metrics: RMS, pitch, words per second.
-5. Compute sentiment score from transcribed text.
-
-### Fusion & Fatigue Computation
-
-* Combine emotion confidence, sentiment score, RMS, WPS, and blink rate.
-* Normalize blink rate (baseline 12-20 blinks/min).
-* Compute weighted fatigue score:
-
-  * Emotion: 55%
-  * Sentiment: 25%
-  * RMS: 15%
-  * WPS: 5%
-* Recommendations generated based on fatigue thresholds and sentiment.
-
-### Recommendations Logic
-
-* `f >= 75`: Guided breathing (5 min) + hydrate
-* `f >= 60`: Guided breathing (3 min) + hydrate
-* `f >= 55`: 2-min stretch + 5-min walk
-* `f >= 40`: 2-min stretch + 5-min walk
-* `f <= 25` and long screen-time: 20-20-20 microbreak
-* Strong negative sentiment: 3-line brain dump
-* Otherwise: Recheck in 15 min
-
----
-
-## Output
-
-* Real-time video overlay displaying:
-
-  * Fatigue bar
-  * Emotion label + confidence
-  * Audio metrics (RMS, pitch, WPS)
-  * Recommendations
-  * FPS and status
-
-* CSV log with columns:
-
-  ```csv
-  ts, emo, emo_conf, ear, blink_rate, text, sent_score, rms, pitch, wps, fatigue, rec
-  ```
-
----
-
-## File Structure
+Logged CSV includes:
 
 ```
-live_coach/
-│
-├─ live_coach.py        # Main script
-├─ requirements.txt     # Dependencies
-├─ models/             # Trained models
-│   └─ face_emotion_resnet18.pt
-├─ data/
-│   └─ processed/      # CSV logs
-├─ config.json         # Optional thresholds/config
-└─ README.md
+timestamp,
+emotion_label,
+emotion_confidence,
+EAR,
+blink_rate,
+transcript,
+sentiment_score,
+RMS,
+pitch,
+WPS,
+fatigue_score,
+recommendation
 ```
 
----
-
-## Dependencies
-
-* Python 3.8+
-* OpenCV
-* Torch & Torchvision
-* Mediapipe
-* Sounddevice
-* Librosa
-* Whisper
-* Scipy
-* Numpy
-* PIL
-* Scikit-learn
+This supports NLP downstream tasks like:
+- stress modeling  
+- semantic drift tracking  
+- prosody‑fatigue correlation  
 
 ---
 
-## Notes
+## Conclusion
 
-* **GPU Recommended** for real-time performance with Whisper and ResNet.
-* EAR thresholds can be calibrated using `config.json`.
-* Logs can be used for offline analysis or training fatigue models.
+This project is best understood as a **multimodal NLP system augmented with vision**, not the other way around.  
+The **linguistic layer** — text, sentiment, prosody, NLG — drives the cognitive inference, while computer vision provides complementary signals.
 
----
+The result is a robust, real‑time cognitive health coach capable of interpreting both *what* users say and *how* they say it.
 
-## License
-
-MIT License

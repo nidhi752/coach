@@ -272,20 +272,8 @@ This log can be used for:
 
 ---
 
-## 9. How to Present This as an NLP Project
 
-If you need a short, accurate NLP-focused pitch:
-
-> “This project is a multimodal cognitive-state estimator where NLP is the core reasoning layer. Whisper-based ASR converts speech to text, sentiment and prosody are extracted to estimate affect and cognitive fatigue, and these linguistic signals are fused with visual features (facial emotion, EAR/blinks) to compute a fatigue score. A rule-based NLG module then generates real-time recommendations for breaks, breathing, and stress management.”
-
-Key phrases you can safely use:
-- “speech-to-text + sentiment + prosody = NLP backbone”
-- “multimodal affective computing with an NLP-centric fusion layer”
-- “NLG-based fatigue intervention suggestions”
-
----
-
-## 10. Limitations and Extensions
+## 9. Limitations and Extensions
 
 Current limitations:
 - Sentiment analysis is lexicon-based (very simple).
@@ -300,7 +288,7 @@ Possible extensions:
 
 ---
 
-## 11. Summary
+## 10. Summary
 
 This codebase is **not just a CV toy**, it is a **full NLP-centric multimodal system**:
 

@@ -9,7 +9,7 @@ NLP shapes the model’s understanding of user intent, emotional nuance, and cog
 
 ---
 
-## 🔥 Why This Is an NLP Project
+## Features
 
 Although multimodal, the system’s *decisive* features depend on NLP:
 
@@ -47,7 +47,7 @@ The linguistic (text + prosody) signal has the *strongest* influence in the fina
 
 ---
 
-## Features
+## Features - Overall
 
 ### 🔹 **NLP Features**
 - Whisper‑based ASR  

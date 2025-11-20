@@ -1,4 +1,4 @@
-# Live Cognitive Health Coach — NLP-Driven Multimodal Fatigue Estimation
+# Live Cognitive Health Coach 
 
 ## 1. Project Overview
 
